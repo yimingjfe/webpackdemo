@@ -30,7 +30,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: path.join(__dirname, './dist/index.html')
     }),
-    // new HelloWorldPlugin(),
+    new HelloWorldPlugin(),
     new webpack.HotModuleReplacementPlugin(),
   ]
 }

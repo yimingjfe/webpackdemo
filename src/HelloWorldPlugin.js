@@ -3,14 +3,14 @@ function HelloWorldPlugin(options){
 }
 
 HelloWorldPlugin.prototype.apply = (compiler) => {
-  console.log(compiler)
+  // console.log(compiler)
   compiler.plugin('emit', (compilation, callback) => {
-    console.log('compilation', compilation);
+    // console.log('compilation', compilation);
     var filelist = 'In this build:\n\n';
     for (var filename in compilation.assets) {
       filelist += ('- '+ filename +'\n');
     }
-
+    console.log('assets', compilation.assets)
     compilation.assets['filelist.md'] = {
       source: function() {
         return filelist;
