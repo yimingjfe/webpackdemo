@@ -10,7 +10,7 @@ HelloWorldPlugin.prototype.apply = (compiler) => {
     for (var filename in compilation.assets) {
       filelist += ('- '+ filename +'\n');
     }
-    console.log('assets', compilation.assets)
+    // console.log('assets', compilation.assets)
     compilation.assets['filelist.md'] = {
       source: function() {
         return filelist;

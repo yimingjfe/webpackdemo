@@ -9,6 +9,7 @@ module.exports = {
   // devtool: 'inline-source-map',
   devServer: {
     contentBase: path.join(__dirname, './dist'),
+    publicPath: "http://localhost:7798/assets/",
     port: 7798
   },
   module: {

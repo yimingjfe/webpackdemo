@@ -1,7 +1,7 @@
 import { greet } from './greet'
 import './style.css'
 import { cube } from './util'
-debugger
+
 console.log('prod', process.env.production)
 
 if (process.env.NODE_ENV !== 'production') {
