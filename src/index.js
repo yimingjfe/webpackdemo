@@ -1,8 +1,8 @@
+import _ from 'lodash';
+import printMe from './print.js';
 import { greet } from './greet'
 import './style.css'
 import { cube } from './util'
-
-console.log('prod', process.env.production)
 
 if (process.env.NODE_ENV !== 'production') {
   console.log('Looks like we are in development mode!');
@@ -10,10 +10,28 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('production')
 }
 
-var parent = window.document.createElement('span')
-parent.classList.add('content')
-parent.textContent = greet + cube(7)
+function component() {
+  var element = document.createElement('div');
+  var btn = document.createElement('button');
 
-// const element = window.document.createElement('h3')
-// element.innerHTML = greet
-window.document.body.appendChild(parent)
+  element.innerHTML = _.join(['Hello', 'webpack'], ' ');
+
+  btn.innerHTML = 'Click me and check the console!';
+  btn.onclick = printMe;
+
+  element.appendChild(btn);
+
+  return element;
+}
+
+let element = component()
+document.body.appendChild(element)
+
+if(module.hot){
+  module.hot.accept('./print.js', function(){
+    console.log('Accepting the updated printMe module!')
+    document.body.removeChild(element)
+    element = component()
+    document.body.appendChild(element)
+  })
+}
