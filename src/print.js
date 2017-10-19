@@ -1,3 +1,3 @@
 export default function printMe() {
-  console.log('fff')
+  console.log('yyyy')
 }
