@@ -4,7 +4,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
-    app: path.resolve(__dirname, '../src/index.js')
+    app: path.resolve(__dirname, '../src/index.js'),
+    vendor: [
+      'lodash'
+    ],
   },
   module: {
     rules: [
@@ -24,7 +27,7 @@ module.exports = {
     ] 
   },
   output: {
-    filename: '[name].bundle.js',
+    filename: '[name].[chunkhash].js',
     path: path.resolve(__dirname, '../dist')
   }
 };

@@ -12,14 +12,17 @@ module.exports = merge(common, {
   devtool: 'source-map',
   plugins: [
     new CleanWebpackPlugin(['dist']),
-    // new UglifyJSPlugin({
-    //   sourceMap: true
-    // }),
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   name: 'common'
-    // }),
+    new UglifyJSPlugin({
+      sourceMap: true
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor'
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'runtime'
+    }),
     new HtmlWebpackPlugin({
-      title: 'development'
+      title: 'production'
     }),
     new webpack.DefinePlugin({
       'process.env': {
