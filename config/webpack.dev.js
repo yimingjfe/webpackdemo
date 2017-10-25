@@ -3,17 +3,20 @@ const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const paths = require('./paths')
 
 module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
-    contentBase: "../dist",
+    // contentBase: "../dist",
+    publicPath: '/',
     port: 7798,
     // publicPath: "http://localhost:7798/assets/"  //决定开发环境的js在哪个目录,推荐与输出的目录相同
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'development'
+      title: 'development',
+      template: paths.appHtml
     }),
     new webpack.HotModuleReplacementPlugin(),
   ],
