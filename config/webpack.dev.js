@@ -5,6 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const paths = require('./paths')
 
+process.env.PUBLIC_URL = ''
+
 module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
@@ -16,7 +18,8 @@ module.exports = merge(common, {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'development',
-      template: paths.appHtml
+      template: paths.appHtml,
+      favicon: paths.favicon
     }),
     new webpack.HotModuleReplacementPlugin(),
   ],

@@ -7,6 +7,7 @@ const ManifestPlugin = require('webpack-manifest-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HelloWorldPlugin = require('../src/HelloWorldPlugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const paths = require('./paths')
 
 module.exports = merge(common, {
   devtool: 'source-map',
@@ -22,7 +23,9 @@ module.exports = merge(common, {
       name: 'runtime'
     }),
     new HtmlWebpackPlugin({
-      title: 'production'
+      title: 'production',
+      template: paths.appHtml,
+      favicon: paths.favicon
     }),
     new webpack.DefinePlugin({
       'process.env': {
