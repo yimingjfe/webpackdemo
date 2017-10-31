@@ -1,4 +1,8 @@
-.content {
-  color: gray;
-  font-size: 12px;
+.container{
+  background-color: black;
+  /* transform: scaleY(5); */
+  .content {
+    color: #fff;
+    font-size: 12px;
+  }
 }

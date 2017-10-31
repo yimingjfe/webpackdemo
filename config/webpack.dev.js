@@ -15,6 +15,35 @@ module.exports = merge(common, {
     port: 7798,
     // publicPath: "http://localhost:7798/assets/"  //决定开发环境的js在哪个目录,推荐与输出的目录相同
   },
+  module:{
+    rules: [
+      {
+        test: /\.css$/,
+        include: /node_modules/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+          },
+          'postcss-loader'
+        ]
+      },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true
+            }
+          },
+          'postcss-loader'
+        ]
+      },
+    ]
+  },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'development',
