@@ -1,8 +1,10 @@
-.container{
-  background-color: black;
-  /* transform: scaleY(5); */
-  .content {
-    color: #fff;
-    font-size: 12px;
+.slider{
+  width: 500px;
+  height: 500px;
+  background-color: #000;
+  color: #FFF;
+  border: 1px solid red;
+  .slider-list{
+        
   }
 }

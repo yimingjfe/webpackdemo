@@ -1,15 +1,14 @@
+import 'normalize.css'
 import style from './style.css'
 import React from 'react';
-// import { Pagination } from 'antd'
 import ReactDOM from 'react-dom';
+import Swiper from './Swiper'
 
 ReactDOM.render(
-  <div>
-    <div className={style.container}>
-      <h1 className={style.content}>Hello, world!</h1>
-    </div>
-    {/* <Pagination defaultCurrent={1} total={50} /> */}
-  </div>
+  <Swiper>
+    <div className={style.slider}>41243234</div>
+    <div className={style.slider}>41243234</div>
+  </Swiper>  
  ,
   document.getElementById('root')
 )
