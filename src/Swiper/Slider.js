@@ -1,10 +1,12 @@
 import React, { Component } from "react"
 import style from './style.css'
 
-export default class Slider extends Slider{
+export default class Slider extends Component{
   render(){
-    <div className={style['slider']}>
-
-    </div>
+    return(
+      <div className={style['slider']}>
+        {this.props.children}
+      </div>
+    )
   }
 }

@@ -5,14 +5,19 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const paths = require('./paths')
 
-process.env.PUBLIC_URL = ''
-
 module.exports = merge(common, {
+  entry: [
+    // 'react-hot-loader/patch',
+    // 'webpack-dev-server/client?http://localhost:7798',
+    // 'webpack/hot/only-dev-server',
+    './src/index.js'
+  ],
   devtool: 'inline-source-map',
   devServer: {
     // contentBase: "../dist",
     publicPath: '/',
     port: 7798,
+    // hot: true
     // publicPath: "http://localhost:7798/assets/"  //决定开发环境的js在哪个目录,推荐与输出的目录相同
   },
   module:{
@@ -36,7 +41,8 @@ module.exports = merge(common, {
           {
             loader: 'css-loader',
             options: {
-              modules: true
+              modules: true,
+              localIdentName: '[path][name]__[local]--[hash:base64:5]'
             }
           },
           'postcss-loader'
@@ -50,10 +56,12 @@ module.exports = merge(common, {
       template: paths.appHtml,
       favicon: paths.favicon
     }),
+    new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
   ],
   output: {
+    publicPath: '/',
     path: path.join(__dirname, '../dist'),
-    filename: '[name].bundle.js'
+    filename: 'bundle.js'
   },
 })

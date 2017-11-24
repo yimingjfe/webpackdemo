@@ -1,6 +1,17 @@
+.clearfix:after{
+  content:'.';
+  display:table;
+  clear:both;
+}
 .container{
+  display: block;
   overflow: hidden;
+  .slider-list{
+    display: block;
+    transform: translate3d(0,0,0);
+  }
   .slider{
-    float: left;
+    display: inline-block;
+    height: 100%;
   }
 }

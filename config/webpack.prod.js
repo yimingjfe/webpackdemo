@@ -14,6 +14,13 @@ const paths = require('./paths')
 // const extractAntCss = new ExtractTextPlugin('static/css/ant.[contenthash:8].css')
 
 module.exports = merge(common, {
+  entry: {
+    app: path.resolve(__dirname, '../src/index.js'),
+    vendor: [
+      'lodash',
+      'react-hot-loader/patch'
+    ],
+  },
   devtool: 'source-map',
   module: {
     rules: [
@@ -92,5 +99,10 @@ module.exports = merge(common, {
     new ManifestPlugin(),
     new HelloWorldPlugin(),
     // new BundleAnalyzerPlugin()
-  ]
+  ],
+
+  output: {
+    filename: '[name].[chunkhash].js',
+    path: path.resolve(__dirname, '../dist')
+  }
 });
