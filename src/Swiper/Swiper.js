@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import style from './style.css'
+import defaultProps from './default-props'
 // import Slider from './Slider'
 import cn from 'classnames'
 import { log } from "core-js/library/web/timers";
@@ -7,6 +8,7 @@ import { log } from "core-js/library/web/timers";
 export default class Swiper extends Component{
 
   state = {
+    curSliderIndex: 0,
     sliderStyle: {},
     sliderListStyle: {}
   }
@@ -41,12 +43,14 @@ export default class Swiper extends Component{
   }
 
   getSliderListStyle = (sliderStyle) => {
+    const { settings } = this.props
     const sliderWidth = sliderStyle.width
     const length = this.props.children.length
     const width = sliderWidth * length
 
     return {
-      width
+      width,
+      transition: `translate ${settings.easing} ${settings.duration}`
     }
   }
 
@@ -77,9 +81,32 @@ export default class Swiper extends Component{
     )
   }
 
-  setContainer = (container) => {
-    this.container = container
-    console.log('yyyy', this.container)
+  pre(){
+
+  }
+
+  next(){
+    const { sliderStyle, sliderListStyle, curSliderIndex } = this.state
+    // this.setState({
+    //   curSliderIndex: curSliderIndex + 1
+    // })
+    const width = sliderStyle.width
+    const transform = this.getTransform()
+    this.setState({
+      curSliderIndex: curSliderIndex + 1,
+      sliderListStyle: {
+        ...sliderListStyle,
+        transform
+      }
+    })
+  }
+
+  jumpTo(){
+
+  }
+
+  getTransform(offset){
+    transform: `translate(${offset}px, 0, 0)` 
   }
 
   componentDidMount() {
@@ -91,7 +118,7 @@ export default class Swiper extends Component{
     const { children } = this.props
     const sliderList = this.renderSliderList()
     return (
-      <div className={style.container} ref={this.setContainer}>
+      <div className={style.container} ref={container => this.container = container}>
         { sliderList }
       </div>
     )
