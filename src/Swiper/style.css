@@ -39,3 +39,27 @@
     }
   }
 }
+.pup-swiper-arrow{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #FFF;
+  font-size: 30px;
+  &.swiper-arrow-pre, &.swiper-arrow-next{
+    cursor: pointer;
+  }
+  &.swiper-arrow-pre{
+    position: absolute;
+    left: 10px;
+  }
+  &.swiper-arrow-next{
+    position: absolute;
+    right: 10px;
+  }
+  &.swiper-arrow-pre::before{
+    content: '<';
+  }
+  &.swiper-arrow-next::before{
+    content: '>';
+  }
+}

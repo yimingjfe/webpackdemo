@@ -72,24 +72,6 @@ class Swiper extends Component{
     })
   }
 
-  renderSliderList = () => {
-    const { children } = this.props
-    const { sliderListStyle, sliderStyle } = this.state
-    console.log('sliderListStyle', sliderListStyle)
-    return (
-      <div className={cn('slider-list', 'clearfix')} style={sliderListStyle}>
-        {
-          children.map( (child, index) => {
-            const slider = this.getSlider(child, index)
-            return (
-              slider
-            )
-          })
-        }
-      </div>
-    )
-  }
-
   normalizeSliderIndex(index){
     const { children } = this.props
     return (index + children.length) % children.length 
@@ -116,7 +98,6 @@ class Swiper extends Component{
     const { sliderListStyle } = this.state
     const offset = this.getOffset(index)
     const transform = this.getTransform(offset)
-    console.log('transform', transform)
     this.setState({
       curSliderIndex: index,
       sliderListStyle: {
@@ -136,6 +117,42 @@ class Swiper extends Component{
     return `translate3d(${offset}px, 0, 0)` 
   }
 
+  renderArrows = () => {
+    const { settings } = this.props
+    const { preArrow, nextArrow } = settings
+    const PreArrow = React.cloneElement(preArrow, {
+      key: 'pre',
+      onClick: () => this.pre()
+    })
+    const NextArrow = React.cloneElement(nextArrow, {
+      key: 'next',
+      onClick: () => this.next()
+    })
+    return (
+      <div>
+        {PreArrow}
+        {NextArrow}
+      </div> 
+    )
+  }
+
+  renderSliderList = () => {
+    const { children } = this.props
+    const { sliderListStyle, sliderStyle } = this.state
+    return (
+      <div className={cn('slider-list', 'clearfix')} style={sliderListStyle}>
+        {
+          children.map( (child, index) => {
+            const slider = this.getSlider(child, index)
+            return (
+              slider
+            )
+          })
+        }
+      </div>
+    )
+  }
+
   componentDidMount() {
     this.initialize()
   }
@@ -145,6 +162,7 @@ class Swiper extends Component{
     const { children, settings } = this.props
     const { curSliderIndex } = this.state
     const sliderList = this.renderSliderList()
+    const arrows = this.renderArrows()
     return (
       <div className={'pup-swiper-container'} ref={container => this.container = container}>
         { sliderList }
@@ -156,6 +174,7 @@ class Swiper extends Component{
           curSliderIndex={settings.curSliderIndex}
           onClick={this.jumpTo}
         />
+        { arrows }
       </div>
     )
   }
