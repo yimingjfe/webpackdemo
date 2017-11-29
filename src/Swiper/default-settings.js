@@ -19,7 +19,7 @@ const defaultProps = {
       <li key={i} className={className}></li>
     )
   },
-preArrow: (<span className='pup-swiper-arrow swiper-arrow-pre'></span>),
+  preArrow: (<span className='pup-swiper-arrow swiper-arrow-pre'></span>),
   nextArrow: (<span className='pup-swiper-arrow swiper-arrow-next'></span>)
 }
 

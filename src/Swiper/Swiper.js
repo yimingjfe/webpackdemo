@@ -7,6 +7,7 @@ import { log } from "core-js/library/web/timers"
 import WrapWithDefault from './WrapWithDefault'
 import Dots from './Dots'
 import PropTypes from 'prop-types'
+import {head, last} from 'lodash'
 import './style.css'
 
 class Swiper extends Component{
@@ -65,37 +66,49 @@ class Swiper extends Component{
   initialize = () => {
     const sliderStyle = this.getSliderStyle()
     const sliderListStyle = this.getSliderListStyle(sliderStyle)
-    console.log('sliderStyle', sliderStyle)
     this.setState({
       sliderStyle,
       sliderListStyle
     })
   }
 
-  normalizeSliderIndex(index){
+  normalizeSliderIndex = (index) => {
     const { children } = this.props
     return (index + children.length) % children.length 
   }
 
-  pre(){
+  pre = () => {
     const { curSliderIndex } = this.state
     const index = curSliderIndex - 1
     this.jumpTo(index)
   }
 
-  next(){
+  next = () => {
     const { curSliderIndex } = this.state
     const index = curSliderIndex + 1
     this.jumpTo(index)
   }
 
   jumpTo = (index) => {
-    const normalizeIndex = this.normalizeSliderIndex(index)
+    let normalizeIndex = 0
+    const { settings } = this.props
+    const { infinite, slidesToScroll } = settings
+    if(infinite){
+      normalizeIndex = this.normalizeSliderIndex(index + slidesToShow)
+    } else {
+      normalizeIndex = this.normalizeSliderIndex(index)
+    }
     this.animate(normalizeIndex)
   }
-
+  // sliderIndex 0 3  2-4
+  // index 1 4
   animate = (index) => {
     const { sliderListStyle } = this.state
+    const { settings } = this.props
+    const { infinite } = settings
+    if(!!infinite){
+      index = index + 1
+    }
     const offset = this.getOffset(index)
     const transform = this.getTransform(offset)
     this.setState({
@@ -122,11 +135,11 @@ class Swiper extends Component{
     const { preArrow, nextArrow } = settings
     const PreArrow = React.cloneElement(preArrow, {
       key: 'pre',
-      onClick: () => this.pre()
+      onClick: this.pre
     })
     const NextArrow = React.cloneElement(nextArrow, {
       key: 'next',
-      onClick: () => this.next()
+      onClick: this.next
     })
     return (
       <div>
@@ -137,12 +150,20 @@ class Swiper extends Component{
   }
 
   renderSliderList = () => {
-    const { children } = this.props
+    let sliders = []
+    const { children, settings } = this.props
+    const { infinite } = settings
     const { sliderListStyle, sliderStyle } = this.state
+    sliders = children.slice()
+    // 这个应该根据一次要滚动多少个元素
+    if(!!infinite){
+      sliders.unshift(last(children))
+      sliders.push(head(children))
+    }
     return (
       <div className={cn('slider-list', 'clearfix')} style={sliderListStyle}>
         {
-          children.map( (child, index) => {
+          React.Children.map(sliders, (child, index) => {
             const slider = this.getSlider(child, index)
             return (
               slider

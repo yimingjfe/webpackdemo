@@ -4,7 +4,7 @@ import Swiper from './Swiper'
 
 const settings = {
   easing: 'cubic-bezier(0.69, 0.28, 0.64, 0.5)',
-  duration: '1s'
+  duration: '0.5s'
 }
 
 export default class SimpleSwiper extends Component{
