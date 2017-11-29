@@ -151,15 +151,18 @@ class Swiper extends Component{
 
   renderSliderList = () => {
     let sliders = []
+    let headSliders = []
+    let lastSliders = []
     const { children, settings } = this.props
     const { infinite } = settings
     const { sliderListStyle, sliderStyle } = this.state
     sliders = children.slice()
     // 这个应该根据一次要滚动多少个元素
-    if(!!infinite){
-      sliders.unshift(last(children))
-      sliders.push(head(children))
-    }
+    React.Children.forEach(children, (child, index) => {
+      if(infinite){
+        const { slidesToShow } = settings
+      }
+    })
     return (
       <div className={cn('slider-list', 'clearfix')} style={sliderListStyle}>
         {
