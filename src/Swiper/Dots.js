@@ -1,10 +1,13 @@
+import React,{ Component } from 'react'
 import PropTypes from 'prop-types'
-export default class Dots{
+import style from './style.css'
+export default class Dots extends Component{
   static PropTypes = {
-    slidesCount: PropTypes.number,
+    slidesCount: PropTypes.number,   //不包含头和尾的数量
     slidesToScroll: PropTypes.number,
     customPaging: PropTypes.func,
-    curIndex: PropTypes.index
+    curIndex: PropTypes.index,
+    onClick: PropTypes.func
   }
 
   getDotsCount = () => {
@@ -13,18 +16,22 @@ export default class Dots{
   }
 
   renderDots = () => {
+    const { curIndex } = this.props
     const count = this.getDotsCount()
-    const dots = Array.fill(0, 0, count).map((x, i) => {
-      return (
-        <li className={dot}></li>
-      )
+    const dots = new Array(count).fill(0).map((x, i) => {
+      return React.cloneElement(this.props.customPaging(i, curIndex), {
+        onClick: () => this.props.onClick(i)
+      }) 
     })
+    return dots
   }
 
   render(){
+    const dots = this.renderDots()
+    // 如果一用特定的类，用户就没法改变样式了
     return (
-      <ul>
-
+      <ul className={'pup-swiper-dots'}>
+        { dots }
       </ul>
     )
   }

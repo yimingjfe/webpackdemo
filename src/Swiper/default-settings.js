@@ -1,4 +1,5 @@
 import cn from 'classnames'
+import React from 'react'
 const defaultProps = {
   infinite: true,
   speed: 500,
@@ -10,12 +11,13 @@ const defaultProps = {
   // dotsClass: ''
   slidesToScroll: 1,
   customPaging: function(i, curIndex){
+    console.log('i === curIndex', i, curIndex, i === curIndex)
     const className = cn({
       'dot-active': i === curIndex,
       'dot': true
     })
     return (
-      <button className={className}></button>
+      <li key={i} className={className}></li>
     )
   }
 }

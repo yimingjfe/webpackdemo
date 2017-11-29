@@ -1,3 +1,2 @@
-import Swiper from './Swiper'
-
+import Swiper from './Swiper.js'
 export default Swiper

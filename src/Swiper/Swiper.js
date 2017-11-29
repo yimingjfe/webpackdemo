@@ -1,11 +1,19 @@
 import React, { Component } from "react"
 import style from './style.css'
-import defaultProps from './default-props'
+import defaultSettings from './default-settings'
 // import Slider from './Slider'
 import cn from 'classnames'
-import { log } from "core-js/library/web/timers";
+import { log } from "core-js/library/web/timers"
+import WrapWithDefault from './WrapWithDefault'
+import Dots from './Dots'
+import PropTypes from 'prop-types'
+import './style.css'
 
-export default class Swiper extends Component{
+class Swiper extends Component{
+
+  static PropTypes = {
+    
+  }
 
   state = {
     curSliderIndex: 0,
@@ -50,14 +58,14 @@ export default class Swiper extends Component{
 
     return {
       width,
-      transition: `translate ${settings.easing} ${settings.duration}`
+      transition: `transform ${settings.easing} ${settings.duration}`
     }
   }
 
   initialize = () => {
     const sliderStyle = this.getSliderStyle()
     const sliderListStyle = this.getSliderListStyle(sliderStyle)
-    // console.log('this', this)
+    console.log('sliderStyle', sliderStyle)
     this.setState({
       sliderStyle,
       sliderListStyle
@@ -67,8 +75,9 @@ export default class Swiper extends Component{
   renderSliderList = () => {
     const { children } = this.props
     const { sliderListStyle, sliderStyle } = this.state
+    console.log('sliderListStyle', sliderListStyle)
     return (
-      <div className={cn(style['slider-list'], style['clearfix'])} style={sliderListStyle}>
+      <div className={cn('slider-list', 'clearfix')} style={sliderListStyle}>
         {
           children.map( (child, index) => {
             const slider = this.getSlider(child, index)
@@ -81,19 +90,35 @@ export default class Swiper extends Component{
     )
   }
 
-  pre(){
+  normalizeSliderIndex(index){
+    const { children } = this.props
+    return (index + children.length) % children.length 
+  }
 
+  pre(){
+    const { curSliderIndex } = this.state
+    const index = curSliderIndex - 1
+    this.jumpTo(index)
   }
 
   next(){
-    const { sliderStyle, sliderListStyle, curSliderIndex } = this.state
-    // this.setState({
-    //   curSliderIndex: curSliderIndex + 1
-    // })
-    const width = sliderStyle.width
-    const transform = this.getTransform()
+    const { curSliderIndex } = this.state
+    const index = curSliderIndex + 1
+    this.jumpTo(index)
+  }
+
+  jumpTo = (index) => {
+    const normalizeIndex = this.normalizeSliderIndex(index)
+    this.animate(normalizeIndex)
+  }
+
+  animate = (index) => {
+    const { sliderListStyle } = this.state
+    const offset = this.getOffset(index)
+    const transform = this.getTransform(offset)
+    console.log('transform', transform)
     this.setState({
-      curSliderIndex: curSliderIndex + 1,
+      curSliderIndex: index,
       sliderListStyle: {
         ...sliderListStyle,
         transform
@@ -101,12 +126,14 @@ export default class Swiper extends Component{
     })
   }
 
-  jumpTo(){
-
+  getOffset = (index) => {
+    const { sliderStyle } = this.state
+    const width = sliderStyle.width
+    return -index * width
   }
 
-  getTransform(offset){
-    transform: `translate(${offset}px, 0, 0)` 
+  getTransform = (offset) => {
+    return `translate3d(${offset}px, 0, 0)` 
   }
 
   componentDidMount() {
@@ -115,12 +142,23 @@ export default class Swiper extends Component{
   
 
   render(){
-    const { children } = this.props
+    const { children, settings } = this.props
+    const { curSliderIndex } = this.state
     const sliderList = this.renderSliderList()
     return (
-      <div className={style.container} ref={container => this.container = container}>
+      <div className={'pup-swiper-container'} ref={container => this.container = container}>
         { sliderList }
+        <Dots
+          curIndex={curSliderIndex}
+          slidesCount={children.length}
+          slidesToScroll={settings.slidesToScroll}
+          customPaging={settings.customPaging}
+          curSliderIndex={settings.curSliderIndex}
+          onClick={this.jumpTo}
+        />
       </div>
     )
   }
 }
+
+export default WrapWithDefault(Swiper, defaultSettings)

@@ -40,12 +40,20 @@ module.exports = merge(common, {
           'style-loader',
           {
             loader: 'css-loader',
-            options: {
-              modules: true,
-              localIdentName: '[path][name]__[local]--[hash:base64:5]'
-            }
+            // options: {
+            //   modules: true,
+            //   localIdentName: '[path][name]__[local]--[hash:base64:5]'
+            // }
           },
-          'postcss-loader'
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: [
+                require('precss')
+              ]
+            }
+          }
+          
         ]
       },
     ]

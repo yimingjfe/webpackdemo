@@ -1,26 +1,20 @@
 import React, { Component } from "react"
-import style from './style.css'
+import './style.css'
 import Swiper from './Swiper'
 
 const settings = {
-  infinite: true,
-  speed: 500,
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  easing: 'ease',
-  duration: '2s',
-  isShowDots: true,
-  // dotsClass: ''
-  slidesToScroll: 1
+  easing: 'cubic-bezier(0.69, 0.28, 0.64, 0.5)',
+  duration: '1s'
 }
 
 export default class SimpleSwiper extends Component{
   render(){
     return (
-      <div style={{width: '700px', margin: '0 auto'}}>
+      <div style={{width: '700px', height:'300px', margin: '0 auto'}}>
         <Swiper settings={settings}>
-          <div className={style.slider}>432232344</div>
-          <div className={style.slider}>4234</div>
+          <div className='slider'>1</div>
+          <div className='slider'>2</div>
+          <div className='slider'>3</div>
         </Swiper> 
       </div>
     )
