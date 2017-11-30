@@ -6,7 +6,7 @@ const defaultProps = {
   slidesToShow: 1,
   slidesToScroll: 1,
   easing: 'ease',
-  duration: '2s',
+  duration: '2000',
   isShowDots: true,
   // dotsClass: ''
   slidesToScroll: 1,

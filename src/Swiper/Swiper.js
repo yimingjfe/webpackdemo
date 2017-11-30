@@ -9,6 +9,7 @@ import Dots from './Dots'
 import PropTypes from 'prop-types'
 import {head, last} from 'lodash'
 import './style.css'
+import { normalize } from "path";
 
 class Swiper extends Component{
 
@@ -18,6 +19,7 @@ class Swiper extends Component{
 
   state = {
     curSliderIndex: 0,
+    pageIndex: this.props.settings.slidesToShow,
     sliderStyle: {},
     sliderListStyle: {}
   }
@@ -51,73 +53,149 @@ class Swiper extends Component{
     })
   }
 
+  getTransition = () => {
+    const { settings } = this.props
+    const duration = this.ms2s(settings.duration)
+    return `transform ${settings.easing} ${duration}s`
+  }
+
   getSliderListStyle = (sliderStyle) => {
     const { settings } = this.props
     const sliderWidth = sliderStyle.width
     const length = this.props.children.length
-    const width = sliderWidth * length
+    let width = 0
+    const transition = this.getTransition()
+    if(settings.infinite){
+      width = sliderWidth * (length + settings.slidesToShow * 2)
+    } else {
+      width = sliderWidth * length
+    }
 
     return {
       width,
-      transition: `transform ${settings.easing} ${settings.duration}`
+      transition
     }
   }
 
   initialize = () => {
     const sliderStyle = this.getSliderStyle()
     const sliderListStyle = this.getSliderListStyle(sliderStyle)
+    const { pageIndex } = this.state
     this.setState({
       sliderStyle,
       sliderListStyle
+    }, () => {
+      this.animate(pageIndex)
     })
   }
 
   normalizeSliderIndex = (index) => {
     const { children } = this.props
-    return (index + children.length) % children.length 
+    let  length = React.Children.count(children)
+    const { settings } = this.props
+    const { slidesToShow, infinite } = settings
+    if(infinite){
+      return (index + length + slidesToShow * 2) % (length + slidesToShow * 2)
+    }
+    return (index + length) % length 
   }
 
   pre = () => {
-    const { curSliderIndex } = this.state
-    const index = curSliderIndex - 1
+    const { pageIndex } = this.state
+    const index = pageIndex - 1
     this.jumpTo(index)
   }
 
   next = () => {
-    const { curSliderIndex } = this.state
-    const index = curSliderIndex + 1
+    const { pageIndex } = this.state
+    const index = pageIndex + 1
     this.jumpTo(index)
   }
 
-  jumpTo = (index) => {
-    let normalizeIndex = 0
-    const { settings } = this.props
-    const { infinite, slidesToScroll } = settings
-    if(infinite){
-      normalizeIndex = this.normalizeSliderIndex(index + slidesToShow)
-    } else {
-      normalizeIndex = this.normalizeSliderIndex(index)
-    }
-    this.animate(normalizeIndex)
+  wait = (time) => {
+    return new Promise( resolve => setTimeout(resolve, time) )
   }
-  // sliderIndex 0 3  2-4
-  // index 1 4
-  animate = (index) => {
-    const { sliderListStyle } = this.state
+
+  jumpTo = async(index) => {
+    let normalizeIndex = 0
+    let pageIndex = 0
+    const length = React.Children.count(this.props.children)
     const { settings } = this.props
-    const { infinite } = settings
-    if(!!infinite){
-      index = index + 1
+    const { sliderStyle } = this.state
+    const { infinite, slidesToShow } = settings
+    normalizeIndex = this.normalizeSliderIndex(index)
+    if(infinite && normalizeIndex < slidesToShow){
+      this.animate(normalizeIndex)
+      await this.wait(settings.duration)
+      pageIndex = normalizeIndex + length
+      this.animate(normalizeIndex + length, false)
+    } else if(infinite && normalizeIndex >= length +  slidesToShow) {
+      this.animate(normalizeIndex) // 执行动画
+      console.time()
+      await this.wait(settings.duration)
+      console.timeEnd()
+      //animate到前面
+      pageIndex = normalizeIndex - length
+      this.animate(pageIndex, false)
+    } else {
+      pageIndex = normalizeIndex
+      this.animate(pageIndex)
     }
+    this.setState({
+      pageIndex,
+      curSliderIndex: pageIndex - slidesToShow
+    })
+  }
+
+  // jumpTo = (index) => {
+  //   const { settings, children } = this.props
+  //   const length = React.Children.count(children)
+  //   const { infinite, slidesToShow } = settings
+
+  //   if(infinite && index < 0){
+
+  //   } else if(infinite && index > length - 1) {
+
+  //   } else {
+  //     this.animate(index)
+  //   }
+  // }
+
+
+  animate = async(index, isAnimate) => {
+    if(isAnimate === undefined) isAnimate = true
+    const { sliderListStyle } = this.state
     const offset = this.getOffset(index)
     const transform = this.getTransform(offset)
-    this.setState({
-      curSliderIndex: index,
-      sliderListStyle: {
-        ...sliderListStyle,
-        transform
-      }
-    })
+    const transition = this.getTransition()
+    if(!!isAnimate){
+      this.setState({
+        sliderListStyle: {
+          ...sliderListStyle,
+          transform,
+          transition
+        }
+      })
+    } else {
+      this.setState({
+        sliderListStyle: {
+          ...sliderListStyle,
+          transform,
+          transition: ''
+        }
+      })
+      await this.wait(2000)
+      this.setState({
+        sliderListStyle: {
+          ...this.state.sliderListStyle,
+          transition
+        }
+      })
+    }
+  }  
+
+  ms2s = (ms) => {
+    return ms / 1000
   }
 
   getOffset = (index) => {
@@ -154,15 +232,25 @@ class Swiper extends Component{
     let headSliders = []
     let lastSliders = []
     const { children, settings } = this.props
-    const { infinite } = settings
+    const { infinite, slidesToShow } = settings
     const { sliderListStyle, sliderStyle } = this.state
-    sliders = children.slice()
+    let length = React.Children.count(children)
+    console.log('slidesToShow', slidesToShow)
     // 这个应该根据一次要滚动多少个元素
     React.Children.forEach(children, (child, index) => {
       if(infinite){
-        const { slidesToShow } = settings
+        // 6  2  头两个和后两个
+        if(index < slidesToShow){
+          lastSliders.push(child)
+        }
+        if(index >= length - slidesToShow){
+          headSliders.push(child)
+        }
       }
+      sliders.push(child)
     })
+    sliders = headSliders.concat(sliders, lastSliders)
+    console.log('sliders', sliders)
     return (
       <div className={cn('slider-list', 'clearfix')} style={sliderListStyle}>
         {
